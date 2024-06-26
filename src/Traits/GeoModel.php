@@ -15,12 +15,28 @@ trait GeoModel
     protected $tmpAttributes = [];
 
     /**
+     * Boot the has event trait for a model.
+     *
+     * @return void
+     */
+    public static function bootGeoModel(): void
+    {
+        static::saving(function ($model) {
+            static::savingGeoJson($model);
+        });
+
+        static::saved(function ($model) {
+            static::savedGeoJson($model);
+        });
+    }
+
+    /**
      * Convert GeoJSON array to raw query befor saving.
      *
      * @param  \Illuminate\Database\Eloquent\Model $model
      * @return void
      */
-    protected static function savingGeoJson($model)
+    protected static function savingGeoJson($model): void
     {
         foreach ($model->getCasts() as $key => $cls) {
             if ($cls == GeoJson::class && is_array($model->$key)) {
@@ -37,7 +53,7 @@ trait GeoModel
      * @param  \Illuminate\Database\Eloquent\Model $model
      * @return void
      */
-    protected static function savedGeoJson($model)
+    protected static function savedGeoJson($model): void
     {
         foreach ($model->getCasts() as $key => $cls) {
             if ($cls == GeoJson::class && isset($model->tmpAttributes[$key])) {
@@ -47,7 +63,13 @@ trait GeoModel
         }
     }
 
-    public function toGeoJson($geom = null)
+    /**
+     * Convert the model instance to a GeoJSON Feature.
+     *
+     * @param  string|null $geom Geometry column
+     * @return array|null
+     */
+    public function toGeoJson($geom = null): ?array
     {
         if (!$geom) {
             $geom = $this->getGeomColumn();
@@ -67,7 +89,12 @@ trait GeoModel
         ];
     }
 
-    public function getGeomColumn()
+    /**
+     * Get default geometry column.
+     *
+     * @return string|null
+     */
+    public function getGeomColumn(): ?string
     {
         $geom = null;
 
