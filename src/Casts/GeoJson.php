@@ -43,7 +43,6 @@ class GeoJson implements CastsAttributes
                 return $geojson;
             } catch (\Throwable $th) {
                 logger()->error($th);
-                unset($th);
             }
         }
 
@@ -57,7 +56,6 @@ class GeoJson implements CastsAttributes
             return $geojson;
         } catch (\Throwable $th) {
             logger()->error($th);
-            unset($th);
         }
     }
 
