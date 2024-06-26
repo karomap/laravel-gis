@@ -76,7 +76,7 @@ trait GeoModel
         }
 
         if (!$geom || ($geom && !$this->$geom)) {
-            return;
+            return null;
         }
 
         $attributes = $this->toArray();
