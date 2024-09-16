@@ -18,9 +18,11 @@ class GISHelper
     public static function getColumns(string $table, $withType = true)
     {
         if ($withType) {
-            return array_map(function ($col) {
-                return $col['type_name'];
-            }, Schema::getColumns($table));
+            return array_reduce(Schema::getColumns($table), function ($result, $col) {
+                $result[$col['name']] = $col['type_name'];
+
+                return $result;
+            }, []);
         }
 
         return Schema::getColumnListing($table);
