@@ -4,17 +4,8 @@ namespace Karomap\LaravelGIS;
 
 use Illuminate\Filesystem\Filesystem;
 use Illuminate\Support\Collection;
-use Illuminate\Support\Facades\DB;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Str;
-use Karomap\LaravelGIS\DoctrineTypes\GeographyType;
-use Karomap\LaravelGIS\DoctrineTypes\GeometryType;
-use Karomap\LaravelGIS\DoctrineTypes\LineStringType;
-use Karomap\LaravelGIS\DoctrineTypes\MultiLineStringType;
-use Karomap\LaravelGIS\DoctrineTypes\MultiPointType;
-use Karomap\LaravelGIS\DoctrineTypes\MultiPolygonType;
-use Karomap\LaravelGIS\DoctrineTypes\PointType;
-use Karomap\LaravelGIS\DoctrineTypes\PolygonType;
 
 class GISServiceProvider extends ServiceProvider
 {
@@ -23,33 +14,6 @@ class GISServiceProvider extends ServiceProvider
         $this->publishes([
             __DIR__.'/../database/migrations/add_postgis_extension.php' => $this->getMigrationFileName('add_postgis_extension.php'),
         ], 'gis-migrations');
-    }
-
-    public function register()
-    {
-        try {
-            if (in_array(DB::getDriverName(), ['mysql', 'pgsql'])) {
-                $customDoctrineTypes = [
-                    GeographyType::class,
-                    GeometryType::class,
-                    PointType::class,
-                    MultiPointType::class,
-                    LineStringType::class,
-                    MultiLineStringType::class,
-                    PolygonType::class,
-                    MultiPolygonType::class,
-                ];
-
-                $doctrinePlatform = DB::getDoctrineConnection()->getDatabasePlatform();
-
-                foreach ($customDoctrineTypes as $typeClass) {
-                    DB::connection()->registerDoctrineType($typeClass, $typeClass::NAME, $typeClass::NAME);
-                    $doctrinePlatform->registerDoctrineTypeMapping($typeClass::NAME, $typeClass::NAME);
-                }
-            }
-        } catch (\Throwable $th) {
-            logger()->error($th);
-        }
     }
 
     /**

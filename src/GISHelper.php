@@ -19,28 +19,11 @@ class GISHelper
     {
         if ($withType) {
             return array_map(function ($col) {
-                return $col->getType()->getName();
-            }, static::getDoctrineColumns($table));
+                return $col['type_name'];
+            }, Schema::getColumns($table));
         }
 
         return Schema::getColumnListing($table);
-    }
-
-    /**
-     * Get table columns.
-     *
-     * @param  string $table
-     * @return array
-     */
-    public static function getDoctrineColumns(string $table)
-    {
-        try {
-            return DB::getDoctrineSchemaManager()->listTableColumns($table);
-        } catch (\Throwable $th) {
-            logger()->error($th->getMessage());
-
-            return [];
-        }
     }
 
     /**
@@ -101,7 +84,7 @@ class GISHelper
      * @param  \Closure|null $callback
      * @return array|void
      */
-    public static function getGeoJsonFeature(string $table, $geomColumn = 'geom', \Closure $callback = null)
+    public static function getGeoJsonFeature(string $table, $geomColumn = 'geom', ?\Closure $callback = null)
     {
         $columns = Arr::except(self::getColumns($table, false), [$geomColumn]);
         $columns[] = DB::raw("ST_AsGeoJSON($geomColumn) as geom");

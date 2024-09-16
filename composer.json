@@ -8,7 +8,6 @@
     ],
     "require": {
         "php": "^8.2",
-        "doctrine/dbal": "^3.6|^4",
         "geo-io/geojson": "dev-main",
         "geo-io/wkb-parser": "dev-main",
         "geo-io/wkt-parser": "dev-main",
