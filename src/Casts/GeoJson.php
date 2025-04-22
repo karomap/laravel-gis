@@ -5,6 +5,7 @@ namespace Karomap\LaravelGIS\Casts;
 use GeoIO\WKB\Parser\Parser as WKBParser;
 use GeoIO\WKT\Parser\Parser as WKTParser;
 use Illuminate\Contracts\Database\Eloquent\CastsAttributes;
+use Illuminate\Support\Facades\Log;
 use Karomap\LaravelGIS\Factories\GeoJSONFactory;
 
 class GeoJson implements CastsAttributes
@@ -42,7 +43,7 @@ class GeoJson implements CastsAttributes
 
                 return $geojson;
             } catch (\Throwable $th) {
-                logger()->error($th);
+                Log::error($th);
             }
         }
 
@@ -55,7 +56,7 @@ class GeoJson implements CastsAttributes
 
             return $geojson;
         } catch (\Throwable $th) {
-            logger()->error($th);
+            Log::error($th);
         }
     }
 
